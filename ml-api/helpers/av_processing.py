@@ -82,16 +82,16 @@ def av_timeline_resolution(clip_length, facial_data, audio_sentiments):
 def extract_audio(fname, des_fname):
     """
     It takes a video file, extracts the audio, and returns the path to the audio file and the length of
-    the video clip
+    the video clip. Converting video to mp3. Ensure ffmpeg is installed and the video path is correct. 
     
     :param fname: The name of the file you want to extract audio from
     :param des_fname: The name of the file you want to save the audio as
     :return: A dictionary with the path to the file and the clip length in seconds.
     """
     path = os.path.join(ROOT_DIR, "data", fname)
-    des_path = os.path.join(ROOT_DIR, "data", des_fname)
-    try:
-        mv_clip = mp.VideoFileClip(path)
+    des_path = os.path.join(ROOT_DIR, "data", des_fname) 
+    try: 
+        mv_clip = mp.VideoFileClip(path) 
         mv_clip.audio.write_audiofile(des_path)
         return {
             "path_to_file": str(des_path),

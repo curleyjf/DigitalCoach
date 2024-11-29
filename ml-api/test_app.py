@@ -14,11 +14,7 @@ def test_predict_endpoint(client):
     with requests_mock.Mocker() as m:
         m.post('/predict', json={'message': 'Task 123 added to queue at 2023-11-11 00:00:00.'})
         response = client.post('/predict', json={
-            'videoUrl': 'https://example.com/video.mp4',
-            'userId': 1,
-            'interviewId': 1,
-            'questionId': 1,
-            'answerId': 1
+            'videoUrl': '../data/video.mp4', 
         })
         assert response.status_code == 200
         
@@ -33,12 +29,12 @@ def test_big_five_feedback_endpoint(client):
                 'a': 3.1,
                 'n': -2.7 
         })
-        
+
         assert response.status_code == 200
         feedback = response.json['feedback']
         assert len(feedback) == 5 
         print(feedback)
-        
+
         assert 'With an Openness score between -3 and 3, you are somewhat open to new experiences and creative, but you still enjoy some structure and consistency.' in feedback[0]
         assert 'With a Conscientiousness score greater than 3, you are always prepared, keep things in order and are very goal driven.' in feedback[1]
         assert 'With an Extraversion score between -3 and 3, you enjoy your personal time but also like the occasional exciting activity or large gathering.' in feedback[2]
@@ -55,4 +51,4 @@ def test_star_scores_endpoint(client):
         }) 
         print(response.json) # use -s to display print.
         assert response.status_code == 200
-        
+#

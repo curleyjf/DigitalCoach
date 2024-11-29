@@ -30,7 +30,10 @@ def _send_job_results(redis_conn):
         print("parsed result here...")
         print(parsed_res)
         firebase_endpnt = os.getenv("FIREBASE_FUNCTIONS_ENDPOINT")
-        #requests.post(firebase_endpnt, data=parsed_res)
+        try:
+            requests.post(firebase_endpnt, data=parsed_res)
+        except Exception as e:
+            print(e)
     ALL_JOBS.clear()
 
 

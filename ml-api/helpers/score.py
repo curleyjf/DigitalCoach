@@ -1,3 +1,4 @@
+from re import A
 from helpers.text_processor import clean_text
 from helpers.text_predict import predict_text_structure
 from models.models import detect_emotions, detect_audio_sentiment
@@ -115,9 +116,8 @@ def _score_bigFive(audio_answer, facial_stats, text_answer):
     return bigFive
 
 
-def create_answer(content):
-    print("creating answer...")
-    facial_answer = _score_facial(content)
+def create_answer(content): 
+    facial_answer = _score_facial(content) 
     audio_answer = _score_audio(content)  
     text_answer = _score_text_structure(audio_answer)
     timeline = av_timeline_resolution(

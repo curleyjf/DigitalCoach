@@ -30,40 +30,26 @@ def predict():
     """
     POST route that returns total text, audio and video predictions.
     """
-    req = request.get_json()
-    print(req);
-	# video_url, user_id, interview_id, question_id, answer_id = (
-    #     req["videoUrl"],
-    #     req["userId"],
-    #     req["interviewId"],
-    #     req["questionId"],
-    #     req["answerId"],
-    # )
-    # if (
-    #     not video_url
-    #     or not user_id
-    #     or not interview_id
-    #     or not question_id
-    #     or not answer_id
-    # ):
-    #     return jsonify(errors="Required fields not in request body.")
-    # print(video_url)
-    # download = download_video_link(video_url)
-    # print('download successful!!')
-    # if "errors" in download:
-    #     return jsonify(message="Download failed.", errors=str(download["errors"]))
-
+    req = request.get_json() # Video URL  
+    # Download the video from the firebase URL 
+    video_url = req['videoUrl'] 
+    if not video_url:
+        return jsonify(errors="Required fields not in request body.") 
+    print("About to download video") 
+    download = download_video_link(video_url) # Download video from URL, returns path to video
+    print("Finished??????")
+    if "errors" in download:
+        return jsonify(message="Download Failed.") 
+    print("Download Successful!")
+    
     content = {
         "fname": "video.mp4",
-        "rename": str(uuid.uuid4()) + ".mp3",
-        # "user_id": user_id,
-        # "interview_id": interview_id,
-        # "question_id": question_id,
-        # "answer_id": answer_id,
+        "rename": str(uuid.uuid4()) + ".mp3" 
     }
     job = q.enqueue(create_answer, content)
-    message = "Task " + str(job.id) + " added to queue at " + str(job.enqueued_at) + "."
-    return jsonify(message=message)
+    message = "Task " + str(job.get_id) + " added to queue at " + str(job.enqueued_at) + "." 
+    return jsonify(message=message) 
+	
 
 @app.route('/big-five-feedback', methods=['POST'])
 def get_big_five_feedback():
@@ -105,7 +91,7 @@ def index():
     """
     Home route.
     """
-    return "Welcome to the ML API for Digital Coach 2222"
+    return "Welcome to the ML API for Digital Coach ayayay"
 
 
 if __name__ == "___main__":

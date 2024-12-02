@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "92ffe3b79cfb72f97dbb1bc2435d62f25e85b635af4ffd69d54505b9d812c95f"
+            "sha256": "038e1d540fe4189ec566ed89e8b2839ce051ac12d656a10c8b5657de9f839031"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -2168,14 +2168,6 @@
             ],
             "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4, 3.5'",
             "version": "==1.26.20"
-        },
-        "video-to-mp3": {
-            "hashes": [
-                "sha256:a7fbfa18bb81425bd0c53c089e39ecd429d259407b4c4d81dc9876dbf4efbf99",
-                "sha256:d64d9a01faab7e2c825a8e242c9f7dc2df602086bebf53a59fb33672d4b7a93f"
-            ],
-            "index": "pypi",
-            "version": "==0.2"
         },
         "wcwidth": {
             "hashes": [

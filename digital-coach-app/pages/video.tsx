@@ -66,6 +66,7 @@ export default function VideoPage() {
 
   const getResults = async () => {
     try {
+      console.log(jobId);
       const response = await axios.get(
         "http://localhost:8000/results/" + jobId
       );

@@ -155,5 +155,5 @@ def create_answer(content):
     # response["interviewId"] = content["interview_id"]
     # response["questionId"] = content["question_id"]
     # response["answerId"] = content["answer_id"]
-    cleanup_data_folder()
+    cleanup_data_folder() 
     return str(response)

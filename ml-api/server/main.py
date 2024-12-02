@@ -45,7 +45,7 @@ def get_results(job_id):
     job = q.fetch_job(job_id)
     if job is None:
         return jsonify(message="Job not found.")
-    if job.is_finished:
+    if job.get("status") == "finished":
         result = job.result
         e_result = eval(result)
         json_string = json.dumps(e_result)
@@ -78,7 +78,7 @@ def predict():
 
 
 
-''
+'''
 
 waitress-serve --listen=*:8000 server.wsgi:app
 

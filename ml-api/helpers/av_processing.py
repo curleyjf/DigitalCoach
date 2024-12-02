@@ -4,6 +4,7 @@ import pandas as pd
 from configs.definitions import ROOT_DIR
 
 
+
 def _build_timeline_intervals_sentiment(sent_analysis_lst):
     """
     Iterates through the sentiment analysis list from the
@@ -82,7 +83,8 @@ def av_timeline_resolution(clip_length, facial_data, audio_sentiments):
 def extract_audio(fname, des_fname):
     """
     It takes a video file, extracts the audio, and returns the path to the audio file and the length of
-    the video clip. Converting video to mp3. Ensure ffmpeg is installed and the video path is correct. 
+    the video clip. Converting video.mp4 to mp3. Ensure ffmpeg is installed and the video path is correct. 
+    (Depreciated)
     
     :param fname: The name of the file you want to extract audio from
     :param des_fname: The name of the file you want to save the audio as
@@ -90,15 +92,26 @@ def extract_audio(fname, des_fname):
     """
     path = os.path.join(ROOT_DIR, "data", fname)
     des_path = os.path.join(ROOT_DIR, "data", des_fname) 
+    # Verify input file existence
+    if not os.path.exists(path):
+        return {"errors": f"File {path} does not exist"}
+    
+    # Ensure destination directory exists
+    if not os.path.exists(os.path.dirname(des_path)):
+        os.makedirs(os.path.dirname(des_path))
+    
+    print(f"Processing file: {path}") 
     try: 
         mv_clip = mp.VideoFileClip(path) 
         mv_clip.audio.write_audiofile(des_path)
+        print("Clip length: ", mv_clip.duration)
         return {
             "path_to_file": str(des_path),
             "clip_length_seconds": mv_clip.duration,
         }
     except OSError as exception:
         return {"errors": str(exception)}
+
 
 
 def read_audio_file(file_path):

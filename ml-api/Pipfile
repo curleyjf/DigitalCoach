@@ -104,7 +104,6 @@ transformers = "==4.36.2"
 accelerate = "==0.28.0"
 moviepy = "*"
 click = "*"
-video-to-mp3 = "*"
 mutagen = "*"
 
 [dev-packages]

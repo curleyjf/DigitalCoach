@@ -7,7 +7,7 @@ from threading import Thread
 from rq import Queue
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-from helpers.download_url import download_video_link
+from helpers.download_url import download_video
 from helpers.score import create_answer
 from db_monitor import poll_connection
 
@@ -36,11 +36,7 @@ def predict():
     if not video_url:
         return jsonify(errors="Required fields not in request body.") 
     print("About to download video") 
-    download = download_video_link(video_url) # Download video from URL, returns path to video
-    print("Finished??????")
-    if "errors" in download:
-        return jsonify(message="Download Failed.") 
-    print("Download Successful!")
+    download_video(video_url) # Download video from URL, returns path to video 
     
     content = {
         "fname": "video.mp4",

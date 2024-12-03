@@ -117,7 +117,7 @@ def _score_bigFive(audio_answer, facial_stats, text_answer):
 
 
 def create_answer(content): 
-    facial_answer = _score_facial(content) 
+    facial_answer = _score_facial(content)  
     audio_answer = _score_audio(content)  
     text_answer = _score_text_structure(audio_answer)
     timeline = av_timeline_resolution(
@@ -151,6 +151,7 @@ def create_answer(content):
     response = {}
     response["evaluation"] = result
     response["text_analysis"] = text_answer 
+    # response["audio_analysis"] = audio_answer
     # response["userId"] = content["user_id"]
     # response["interviewId"] = content["interview_id"]
     # response["questionId"] = content["question_id"]

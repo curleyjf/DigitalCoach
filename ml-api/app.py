@@ -30,18 +30,28 @@ def launch_polling_script():
 @app.route("/results/<job_id>", methods=["GET"])
 def get_results(job_id):
     """
-        GET route that returns results of a job.
+    GET route that returns results of a job.
     """
-    job = q.fetch_job(job_id)
-    print(job)
-    if job is None:
-        return jsonify(message="Job not found.")
-    if job.get("status") == "finished":
-        result = job.get("result") 
-        print(result)
-        e_result = eval(result)
-        json_string = json.dumps(e_result)
-        return jsonify(result=json.loads(json_string))
+    # Fetch job status from Redis hash
+    job_status = r.hget(f"rq:job:{job_id}", "status")
+    if job_status is None:
+        return jsonify(message="Job not found.") 
+    # Decode the job status
+    job_status = job_status.decode("utf-8") 
+    if job_status == "finished":
+        # Fetch job result from Redis hash
+        result = r.hget(f"rq:job:{job_id}", "result")
+        if result is None:
+            return jsonify(message="Job result not found.") 
+        # Decode and process the result
+        try:
+            result = result.decode("utf-8")  # Decode bytes to string
+            print(f"Raw result: {result}") 
+            e_result = eval(result)  # Caution: Evaluate the result
+            json_string = json.dumps(e_result)  # Serialize as JSON string
+            return jsonify(result=json.loads(json_string))  # Parse and return JSON
+        except Exception as e:
+            return jsonify(message="Error processing job result.", error=str(e))
     else:
         return jsonify(message="Job has not finished yet.")
 
@@ -72,13 +82,17 @@ def predict():
         "rename": str(uuid.uuid4()) + ".mp3" 
     }
     job = q.enqueue(create_answer, content)
-    message = "Task " + str(job.get_id) + " added to queue at " + str(job.enqueued_at) + "." 
+    message = "Task " + str(job.get_id()) + " added to queue at " + str(job.enqueued_at) + "." 
+    print("this is the returned job id", job.get_id())
+    print("this is the stringified jobid", message.split(" ")[1])
     result = job.latest_result(timeout=600) 
     if result.type == result.Type.SUCCESSFUL:
         print("Return Value", result.return_value) 
         job_key = f"rq:job:{job.get_id()}" 
         r.hset(job_key, "result", result.return_value)
-        print(f"Result stored in {job_key}.")
+        print(f"Result stored in {job_key}.") 
+        print("this is the returned job id", job.get_id())
+        print("this is the stringified jobid", message.split(" ")[1])
     return jsonify(message=message) 
 	
 

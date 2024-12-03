@@ -78,16 +78,16 @@ export default function VideoPage() {
           { title: "Test" } as IBaseInterview,
           response.data.result.evaluation
         );
-        // New Big Five Feedback endpoint
-        const feedbackResponse = await axios.post(
-          "http://localhost:8000/big-five-feedback",
-          {
-            big_five: bigFive,
-          }
-        );
-        // Output the feedback on the screen for the user
-        setFeedback(feedbackResponse.data.feedback);
-        console.log("userFeedback: " + feedbackResponse.data.feedback);
+        // // New Big Five Feedback endpoint
+        // const feedbackResponse = await axios.post(
+        //   "http://localhost:8000/big-five-feedback",
+        //   {
+        //     big_five: bigFive,
+        //   }
+        // );
+        // // Output the feedback on the screen for the user
+        // setFeedback(feedbackResponse.data.feedback);
+        // console.log("userFeedback: " + feedbackResponse.data.feedback);
       } else {
         alert(
           "The results are not ready yet. Please try again in a minute or so"

@@ -1,5 +1,3 @@
-
-
 import { TSubject } from "@App/lib/question/models";
 
 const questionsData: any[] = [
@@ -60,7 +58,7 @@ const questionsData: any[] = [
       "What is the difference between accounts payable and accounts receivable?",
       "How do you stay updated on changes in accounting standards and regulations?",
       "How do you handle tight deadlines and pressure in a financial reporting role?",
-      "Discuss a challenging financial project you worked on and how you contributed to its success"
+      "Discuss a challenging financial project you worked on and how you contributed to its success",
     ],
   },
   {
@@ -77,7 +75,7 @@ const questionsData: any[] = [
       "What processes do you use to make sure you haven’t made any mistakes?",
       "What steps do you take to keep your engineering skills current?",
       "Can you tell me about a project that fell behind schedule? What happened, and what was the outcome of the project?",
-      "Can you tell me about the most challenging technical report you ever had to create?"
+      "Can you tell me about the most challenging technical report you ever had to create?",
     ],
   },
   {
@@ -102,7 +100,7 @@ const questionsData: any[] = [
       "What is a relational database and how would you store information in one, consider using SQL?",
       "In concurrency, explain the concept of deadlock and how it can be prevented.",
       "What are the main differences between a process and a thread?",
-      "Describe how blockchain functions and some of its potential applications."
+      "Describe how blockchain functions and some of its potential applications.",
     ],
   },
   {
@@ -124,8 +122,7 @@ const questionsData: any[] = [
       "When do you capitalize rather than expense a purchase?",
       "Why would two companies merge?",
       "What major factors drive mergers and acquisitions?",
-      "Why would a company fund its operations by issuing equity rather than debt?"
-
+      "Why would a company fund its operations by issuing equity rather than debt?",
     ],
   },
   {
@@ -139,7 +136,7 @@ const questionsData: any[] = [
       "Tell me about a time you had to communicate your technical findings to a non-technical audience.",
       "Tell me about a time you used data visualization in a project.",
       "How would you handle missing values in a dataset?",
-      "Tell me about a project where your analysis had a significant impact on decision-making."
+      "Tell me about a project where your analysis had a significant impact on decision-making.",
     ],
   },
   {
@@ -151,7 +148,7 @@ const questionsData: any[] = [
       "How would you ensure diversity and inclusion in a workplace?",
       "Tell me about a time you had a disagreement with leadership and how you approached this.",
       "How do you measure and improve employee engagement?",
-      "Tell me about a time you handled a conflict between employees."
+      "Tell me about a time you handled a conflict between employees.",
     ],
   },
   {
@@ -160,7 +157,7 @@ const questionsData: any[] = [
       "What is your experience with cloud computing platforms?",
       "Tell me about a time you had to learn and implement a new technology.",
       "What considerations do you take into account when designing a new IT infrastructure?",
-      "How do you ensure the security and integrity of a network/system?"
+      "How do you ensure the security and integrity of a network/system?",
     ],
   },
   {
@@ -171,7 +168,7 @@ const questionsData: any[] = [
       "How do you approach legal research and stay updated on changes in laws and regulations?",
       "How do you handle ethical dilemmas or conflicts of interest in your practice?",
       "How do you handle stress and high-pressure situations in the legal profession?",
-      "How do you keep your client informed and involved in their case?"
+      "How do you keep your client informed and involved in their case?",
     ],
   },
   {
@@ -181,7 +178,7 @@ const questionsData: any[] = [
       "Describe a successful marketing campaign you were a part of. What was your role, and what were the results?",
       "How do you approach market research, and what tools or methods do you use?",
       "Can you discuss a time when a marketing campaign didn't go as planned? What did you learn from that experience?",
-      "Describe your experience with data analytics and how you use data to inform marketing decisions."
+      "Describe your experience with data analytics and how you use data to inform marketing decisions.",
     ],
   },
   {
@@ -192,7 +189,7 @@ const questionsData: any[] = [
       "What do you do when facing a small budget or lack of resources? Have you faced this challenge in the past?",
       "Tell me about the best manager you’ve ever had.",
       "Which Management Information Systems have you used?",
-      "Discuss an instance in which one of your ideas has helped to improve operations at other companies."
+      "Discuss an instance in which one of your ideas has helped to improve operations at other companies.",
     ],
   },
   {
@@ -203,7 +200,7 @@ const questionsData: any[] = [
       "How do you handle collaboration across different fields such as engineering, design, and other teams?",
       "Can you walk through the stages of a product life cycle?",
       "Describe a situation where you had to pivot a product strategy.",
-      "What challenges have you faced during a product launch, and how did you overcome them?"
+      "What challenges have you faced during a product launch, and how did you overcome them?",
     ],
   },
   {
@@ -223,7 +220,56 @@ const questionsData: any[] = [
       "Discuss a situation where you had to work under pressure to meet a project deadline.",
       "Describe a time when you had to step up and demonstrate leadership skills.",
       "Tell me about a time when you had to meet a tight deadline and how you managed your time?",
-      "Do you prefer to work with others or individually?"
+      "Do you prefer to work with others or individually?",
+    ],
+  },
+  {
+    subject: "Storytelling",
+    questions: [
+      "Was there ever a time when you tried something new and surprising? What was it, and how did you feel afterward?",
+      "Can you think of a time when you had to take care of someone? How did it affect you?",
+      "Tell me about a time when you accomplished something you’re really proud of, even if it was small.",
+      "If you could interview anyone, what would you ask them and why?",
+      "Describe a time when you worked hard to save or purchase something.",
+      "Describe a time when you were scared. What happened?",
+      "Describe a time where you made something for someone else? Why? What was their reaction?",
+      "What was your most difficult class and what did you do to get through it?",
+      "If you had to give advice to a younger version of yourself, what would it be?",
+      "Was there ever a time when you worked hard to save or purchase something?",
+      "Tell me about a time you had to work with a difficult team member. How did you handle the situation?",
+      "If you could relive one day in your life, which day would it be and why?",
+      "Tell me about a time when you took on a leadership role in a club, team, or school activity. What did you accomplish?",
+      "Share a time when you had to meet a tight deadline. How did you ensure success?",
+      "Have you ever had to resolve a conflict between two people? How did you handle it?",
+      "Can you recall a moment when you received constructive criticism? How did you respond to it?",
+      "Describe a situation where you had to persuade others to see things your way. How did you achieve this?",
+      "Tell me about a time when you successfully managed multiple priorities. How did you organize your time?",
+      "Share an experience where you solved a complex problem. What process did you use?",
+      "Can you provide an example of when you worked on a project with little guidance? How did you manage it?",
+      "Think of a time when you had to make a quick decision under pressure. What happened, and how did you handle it?",
+      "Tell me about a time when you had to explain something complicated to someone. How did you make it clear and understandable?",
+      "Describe a time when you worked on a group project in school. How did you contribute, and what was the result?",
+      "Can you describe a time when you resolved a misunderstanding or prevented a conflict? How did you approach the situation?",
+      "Share an experience where you were part of a team that achieved a significant accomplishment. What was your role in the success?",
+      "If you could relive one day in your life, which day would it be and why?",
+      "Tell me about a time when you faced a challenge in pursuing a hobby or activity you love. How did you overcome it?",
+      "Think of an experience where you worked with others on a hobby-related project. What was your role?",
+      "Describe a time when your hobby or interest led you to connect with someone new. What was the outcome?",
+    ],
+  },
+  {
+    subject: "Scenarios",
+    questions: [
+      "You’re struggling to understand a concept in class and need to prepare for an important exam. What steps would you take to overcome this challenge?",
+      "Your team is assigned a project with minimal guidance from leadership. How would you take initiative to organize the team and ensure the project is completed successfully?",
+      "Your group of friends decides to plan a trip or outing, but there’s a disagreement about the location. How would you step in to ensure everyone is satisfied?",
+      "You notice a friend is being excluded from group activities or conversations. What would you do to include them and support them?",
+      "A close friend achieves something significant, and you’re tasked with planning a small celebration. How would you go about organizing it?",
+      "You decide to participate in a competition or event related to a hobby. What steps would you take to improve and perform your best?",
+      "You’re asked to teach or share your hobby with someone who is completely new to it. How would you approach this task?",
+      "You’re working on a team project, and a key team member suddenly quits or becomes unavailable right before a deadline. How would you handle their responsibilities?",
+      "You miss an important deadline for an assignment due to a misunderstanding about the instructions. How would you address this with your teacher and move forward?",
+      "A close friend confides in you about a personal problem they’re facing, but you’re unsure how to help. How would you approach offering support?",
     ],
   },
 ];

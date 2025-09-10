@@ -1,0 +1,24 @@
+.Card {
+  border: 1px solid rgba(0, 0, 0, 0.11);
+  background: #ffffff;
+  box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.12);
+  border-radius: 10px;
+  padding: 1rem 2rem;
+  margin-bottom: 10px;
+  height: 100%;
+  max-height: 100%;
+  overflow-y: auto;
+
+  &title {
+    color: black;
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 24px;
+  }
+}
+.CardMulti {
+  @extend .Card;
+  width: fit-content;
+  max-width: 40%;
+}

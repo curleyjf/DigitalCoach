@@ -1,5 +1,3 @@
-
-
 import type { NextApiRequest, NextApiResponse } from "next";
 import QuestionService from "@App/lib/question/QuestionService";
 

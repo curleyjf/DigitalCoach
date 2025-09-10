@@ -9,10 +9,29 @@ import AddQuestionToSetModal from "@App/components/molecules/modals/AddQuestionT
 
 import styles from "@App/styles/BrowseQuestionsPage.module.scss";
 
-import { List, ListItem, ListItemText, ListItemIcon, IconButton, Divider, TextField, Box, Checkbox, Select, MenuItem, FormControl, FormGroup, Button } from "@mui/material";
+import {
+  List,
+  ListItem,
+  ListItemText,
+  ListItemIcon,
+  IconButton,
+  Divider,
+  TextField,
+  Box,
+  Checkbox,
+  Select,
+  MenuItem,
+  FormControl,
+  FormGroup,
+  Button,
+} from "@mui/material";
 
 import AddIcon from "@mui/icons-material/Add";
-import { TExperienceLevel, TQuestionType, TSubject } from "@App/lib/question/models";
+import {
+  TExperienceLevel,
+  TQuestionType,
+  TSubject,
+} from "@App/lib/question/models";
 
 const sampleSubjects = [
   "Business Accounting and Analytics",
@@ -24,7 +43,9 @@ const sampleSubjects = [
   "Marketing",
   "Operations",
   "Product Management",
-  "Computer Science"
+  "Computer Science",
+  "Storytelling",
+  "Scenarios"
 ];
 
 function BrowseQuestionsPage() {
@@ -56,25 +77,27 @@ function BrowseQuestionsPage() {
     async function fetchQuestions() {
       setLoading(true);
       const questions = await QuestionService.getByFilters(
-      subjectSelect as TSubject,
-      typeSelect as TQuestionType,
-      experienceLevelSelect as TExperienceLevel,
-      popularityCheckbox,
-      searchText.toLowerCase().trim(),
-      RESULT_LIMIT,
-      lastVisible
-    );
+        subjectSelect as TSubject,
+        typeSelect as TQuestionType,
+        experienceLevelSelect as TExperienceLevel,
+        popularityCheckbox,
+        searchText.toLowerCase().trim(),
+        RESULT_LIMIT,
+        lastVisible
+      );
       console.log(questions);
-      let allq = await QuestionService.getAllQuestions()
+      let allq = await QuestionService.getAllQuestions();
       console.log(allq);
-      let sub = await QuestionService.getByPopularityDesc()
+      let sub = await QuestionService.getByPopularityDesc();
       console.log(sub);
       setLastVisible(questions.docs[questions.docs.length - 1]);
       setQuestionsData(questions.docs.map((doc) => doc.data()));
       setLoading(false);
     }
     async function fetchUserQuestionSets() {
-      const userQuestionSets: any[] = (await QuestionSetsService.getQuestionSetByUserId(currentUser!.id)).docs.map((doc) => {
+      const userQuestionSets: any[] = (
+        await QuestionSetsService.getQuestionSetByUserId(currentUser!.id)
+      ).docs.map((doc) => {
         return { id: doc.id, ...doc.data() };
       });
       setUserQuestionSets(userQuestionSets);
@@ -110,7 +133,9 @@ function BrowseQuestionsPage() {
     setQuestionsData(questionsData.concat(data.docs.map((doc) => doc.data())));
   };
 
-  const handleFilterSubmit = async (event: React.FormEvent<HTMLButtonElement>) => {
+  const handleFilterSubmit = async (
+    event: React.FormEvent<HTMLButtonElement>
+  ) => {
     event.preventDefault();
     setPage(page + 1);
     setLoading(true);
@@ -128,21 +153,30 @@ function BrowseQuestionsPage() {
     setLoading(false);
   };
 
-  const handleTextFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTextFieldChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setSearchText(event.target.value);
   };
 
-  const handleOpenAddQuestionModal = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleOpenAddQuestionModal = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
     if (userQuestionSets.length === 0) {
-      alert("You have no question sets to add questions to. Please create a question set first.");
+      alert(
+        "You have no question sets to add questions to. Please create a question set first."
+      );
       return;
     }
-    console.log(event)
+    console.log(event);
     setSelectedQuestion(event);
     setShowAddQuestionModal(true);
   };
 
-  const handleAddQuestionToSet = async (questionId: string, questionSetId: string) => {
+  const handleAddQuestionToSet = async (
+    questionId: string,
+    questionSetId: string
+  ) => {
     await QuestionSetsService.addQuestionToSet(questionId, questionSetId);
   };
 
@@ -158,32 +192,51 @@ function BrowseQuestionsPage() {
         }}
       >
         {loading ? (
-            <p>Loading...</p>
-          ) : (<List sx={{ bgcolor: "background.paper", width: "90%" }}>
-          {questionsData.map((question) => (
-            <div>
-              <ListItem>
-                <ListItemIcon>
-                  <IconButton onClick={() => handleOpenAddQuestionModal(question)}>
-                    <AddIcon />
-                  </IconButton>
-                </ListItemIcon>
-                <div>
-                  <ListItemText primary={question.question} secondary={["Subject: " + question.subject, "Type: " + question.type, question.companies && question.companies.length > 0 && question.companies[0] ? "Company: " + question.companies[0] : null].filter(Boolean).join(" | ")} />
-                  <ListItemText secondary={"Experience: " + question.experienceLevel} />
-                </div>
-              </ListItem>
-              <Divider />
-            </div>
-          ))}
-          {page * RESULT_LIMIT >= totalNumberOfQuestions ? (
-            <></>
-          ) : (
-            <Button variant="contained" onClick={() => handleViewMore()}>
-              View More
-            </Button>
-          )}
-        </List>)}
+          <p>Loading...</p>
+        ) : (
+          <List sx={{ bgcolor: "background.paper", width: "90%" }}>
+            {questionsData.map((question) => (
+              <div>
+                <ListItem>
+                  <ListItemIcon>
+                    <IconButton
+                      onClick={() => handleOpenAddQuestionModal(question)}
+                    >
+                      <AddIcon />
+                    </IconButton>
+                  </ListItemIcon>
+                  <div>
+                    <ListItemText
+                      primary={question.question}
+                      secondary={[
+                        "Subject: " + question.subject,
+                        "Type: " + question.type,
+                        question.companies &&
+                        question.companies.length > 0 &&
+                        question.companies[0]
+                          ? "Company: " + question.companies[0]
+                          : null,
+                      ]
+                        .filter(Boolean)
+                        .join(" | ")}
+                    />
+                    <ListItemText
+                      secondary={"Experience: " + question.experienceLevel}
+                    />
+                  </div>
+                </ListItem>
+                <Divider />
+              </div>
+            ))}
+            {page * RESULT_LIMIT >= totalNumberOfQuestions ? (
+              <></>
+            ) : (
+              <Button variant="contained" onClick={() => handleViewMore()}>
+                View More
+              </Button>
+            )}
+          </List>
+        )}
         <Box
           id="#filters"
           sx={{
@@ -201,7 +254,12 @@ function BrowseQuestionsPage() {
           <h2>Filters</h2>
 
           {/* <FormControl size="small"> */}
-          <TextField variant="outlined" size="small" label="Question Keyword Search" onChange={handleTextFieldChange}></TextField>
+          <TextField
+            variant="outlined"
+            size="small"
+            label="Question Keyword Search"
+            onChange={handleTextFieldChange}
+          ></TextField>
           <label htmlFor="subject-select">Subject</label>
           <Select
             id="subject-select"
@@ -209,13 +267,22 @@ function BrowseQuestionsPage() {
             size="small"
             onChange={(event) => setSubjectSelect(event.target.value)}
           >
-            <MenuItem key="any" value="Any">Any</MenuItem> 
+            <MenuItem key="any" value="Any">
+              Any
+            </MenuItem>
             {sampleSubjects.map((subject, index) => (
-              <MenuItem key={index} value={subject}>{subject}</MenuItem> 
+              <MenuItem key={index} value={subject}>
+                {subject}
+              </MenuItem>
             ))}
           </Select>
           <label htmlFor="type-select">Type</label>
-          <Select id="type-select" value={typeSelect} size="small" onChange={(event) => setTypeSelect(event.target.value)}>
+          <Select
+            id="type-select"
+            value={typeSelect}
+            size="small"
+            onChange={(event) => setTypeSelect(event.target.value)}
+          >
             <MenuItem key={"type-any"} value="Any">
               Any
             </MenuItem>
@@ -227,7 +294,12 @@ function BrowseQuestionsPage() {
             </MenuItem>
           </Select>
           <label htmlFor="experience-level-select">Experience Level</label>
-          <Select id="experience-level-select" value={experienceLevelSelect} size="small" onChange={(event) => setExperienceLevelSelect(event.target.value)}>
+          <Select
+            id="experience-level-select"
+            value={experienceLevelSelect}
+            size="small"
+            onChange={(event) => setExperienceLevelSelect(event.target.value)}
+          >
             <MenuItem key={"experience-any"} value="Any">
               Any
             </MenuItem>
@@ -241,7 +313,11 @@ function BrowseQuestionsPage() {
               Senior
             </MenuItem>
           </Select>
-          <Button sx={{ mt: 1 }} variant="contained" onClick={handleFilterSubmit}>
+          <Button
+            sx={{ mt: 1 }}
+            variant="contained"
+            onClick={handleFilterSubmit}
+          >
             Apply Filters
           </Button>
           {/* </FormControl> */}

@@ -1,10 +1,10 @@
-import { FirebaseApp, getApp } from "firebase/app";
-import "@App/lib/firebase/firebase.config";
+import { FirebaseApp, getApps, getApp, initializeApp } from "firebase/app";
+import { firebaseConfig } from "./firebase.config";
 
 export default class FirebaseService {
   app: FirebaseApp;
 
   constructor() {
-    this.app = getApp();
+    this.app = getApps().length ? getApp() : initializeApp(firebaseConfig);
   }
 }

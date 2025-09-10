@@ -1,26 +1,26 @@
-@import "@App/styles/colors.scss";
+@use "@App/styles/colors.scss" as *;
 .Home {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  width:100%;
-  color:black;
+  width: 100%;
+  color: black;
 }
-.cards{
+.cards {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   gap: 1rem;
-  width:100%;
+  width: 100%;
   position: relative;
 }
-.calendarWrapper{
+.calendarWrapper {
   padding: 15px 15px;
 }
-.issuesChartWrapper{
+.issuesChartWrapper {
   padding: 15px 15px;
 }
 
-.tipoftheday{
+.tipoftheday {
   padding: 5px 5px;
 }

@@ -12,6 +12,8 @@ export type TSubject =
   | "Product Management"
   | "Computer Science"
   | "Engineering"
+  | "Storytelling"
+  | "Scenarios"
   | "Any";
 
 export type TQuestionType = "behaviorial" | "technical" | "Any";

@@ -12,22 +12,21 @@ import {
   Query,
   query,
   Timestamp,
-} from 'firebase/firestore';
-import FirebaseService from '@App/lib/firebase/FirebaseService';
-import UserService from '@App/lib/user/UserService';
+} from "firebase/firestore";
+import FirebaseService from "@App/lib/firebase/FirebaseService";
+import UserService from "@App/lib/user/UserService";
 import {
   IBaseInterview,
   IInterviewAttributes,
   TInterviewDocumentReference,
-} from '@App/lib/interview/models';
+} from "@App/lib/interview/models";
 
 class InterviewService extends FirebaseService {
   private firestore: Firestore;
 
-  constructor() {
+  constructor(db?: Firestore) {
     super();
-
-    this.firestore = getFirestore(this.app);
+    this.firestore = db || getFirestore(this.app);
   }
 
   /**
@@ -37,7 +36,7 @@ class InterviewService extends FirebaseService {
   private getCollectionGroupRef() {
     return collectionGroup(
       this.firestore,
-      'interviews'
+      "interviews"
     ) as Query<IInterviewAttributes>;
   }
 
@@ -51,9 +50,9 @@ class InterviewService extends FirebaseService {
 
     return doc(
       this.firestore,
-      'users',
+      "users",
       ref.userId,
-      'interviews',
+      "interviews",
       ref.interviewId
     ) as DocumentReference<IInterviewAttributes>;
   }
@@ -66,9 +65,9 @@ class InterviewService extends FirebaseService {
   private getCollectionRef(userId: string) {
     return collection(
       this.firestore,
-      'users',
+      "users",
       userId,
-      'interviews'
+      "interviews"
     ) as CollectionReference<IInterviewAttributes>;
   }
 
@@ -80,11 +79,19 @@ class InterviewService extends FirebaseService {
    */
   async create(userId: string, baseInterview: IBaseInterview, result = {}) {
     const collectionRef = this.getCollectionRef(userId);
-    const userDocRef = await UserService.getUser(userId);
-    const avatarUrl = userDocRef.get('avatarUrl');
-    const name = userDocRef.get('name');
-    const concentration = userDocRef.get('concentration');
-    const proficiency = userDocRef.get('proficiency');
+    const userDocSnapshot = await UserService.getUser(userId);
+    const userData = userDocSnapshot.data(); // Get the actual data from the snapshot
+
+    // Only update user if we have the data
+    if (userData) {
+      await UserService.updateUser(userId, {
+        name: userData.name,
+        concentration: userData.concentration,
+        proficiency: userData.proficiency,
+        avatarUrl: userData.avatarUrl,
+      });
+    }
+
     const interview: IInterviewAttributes = {
       ...baseInterview,
       completedAt: null,
@@ -92,12 +99,6 @@ class InterviewService extends FirebaseService {
       createdAt: Timestamp.now(),
       result: result,
     };
-    await UserService.updateUser(userId, {
-      name,
-      concentration,
-      proficiency,
-      avatarUrl,
-    });
 
     return addDoc(collectionRef, interview);
   }

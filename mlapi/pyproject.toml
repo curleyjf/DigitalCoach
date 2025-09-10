@@ -1,0 +1,39 @@
+[project]
+name = "mlapi"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "assemblyai>=0.40.2",
+    "deepface>=0.0.93",
+    "fastapi>=0.115.12",
+    "httpx>=0.28.1",
+    "nltk>=3.9.1",
+    "pytest>=8.3.5",
+    "redis>=5.2.1",
+    "rq>=2.3.2",
+    "tensorflow-cpu>=2.18.0",
+    "tf-keras>=2.18.0",
+    "tqdm>=4.67.1",
+    "transformers>=4.51.3",
+    "uvicorn>=0.34.2",
+    "torch>=2.6.0",
+    "torchvision>=0.21.0",
+    "opencv-python-headless>=4.11.0.86",
+    "python-dotenv>=1.1.0",
+    "pydantic-settings>=2.9.1",
+]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.uv.sources]
+torch = [
+  { index = "pytorch-cpu" },
+]
+torchvision = [
+  { index = "pytorch-cpu" },
+]

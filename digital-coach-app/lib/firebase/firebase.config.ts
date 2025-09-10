@@ -1,8 +1,8 @@
-import { getStorage, connectStorageEmulator } from 'firebase/storage';
-import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
-import { getAuth, connectAuthEmulator } from 'firebase/auth';
-import { getAnalytics } from 'firebase/analytics';
-import { initializeApp, getApps } from 'firebase/app';
+import { getStorage, connectStorageEmulator } from "firebase/storage";
+import { getFirestore, connectFirestoreEmulator } from "firebase/firestore";
+import { getAuth, connectAuthEmulator } from "firebase/auth";
+import { getAnalytics } from "firebase/analytics";
+import { initializeApp, getApps } from "firebase/app";
 
 export const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -13,13 +13,13 @@ export const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
-const localIp = 'localhost';
-if (!getApps.length) {
+const localIp = "localhost";
+
+if (!getApps().length) {
   const app = initializeApp(firebaseConfig);
-  if (typeof window !== 'undefined') {
-    if ('measurementId' in firebaseConfig) {
-      getAnalytics();
-    }
+
+  if (typeof window !== "undefined" && "measurementId" in firebaseConfig) {
+    getAnalytics(app);
   }
 
   const auth = getAuth(app);

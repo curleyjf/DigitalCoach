@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+.git
+.venv
+tests/
+data/
+.ruff_cache/
+.pytest_cache/
+.mypy_cache/
+CLAUDE.md

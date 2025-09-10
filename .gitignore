@@ -137,4 +137,4 @@ venv
 
 /ml-api/data/*
 /ml-api/.env
-
+/ml-api/backend/__pycache__/

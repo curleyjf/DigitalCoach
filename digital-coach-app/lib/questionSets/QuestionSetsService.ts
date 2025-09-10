@@ -14,9 +14,9 @@ import {
   where,
   updateDoc,
   arrayUnion,
-} from 'firebase/firestore';
-import FirebaseService from '../firebase/FirebaseService';
-import { IBaseQuestion } from '../question/models';
+} from "firebase/firestore";
+import FirebaseService from "../firebase/FirebaseService";
+import { IBaseQuestion } from "../question/models";
 
 interface IQuestionSetAttributes {
   title: string;
@@ -42,14 +42,14 @@ class QuestionSetsService extends FirebaseService {
   private getCollectionRef() {
     return collection(
       this.firestore,
-      'questionSets'
+      "questionSets"
     ) as CollectionReference<IQuestionSet>;
   }
 
   private getDocRef(qsId: string) {
     return doc(
       this.firestore,
-      'questionSets',
+      "questionSets",
       qsId
     ) as DocumentReference<IQuestionSetAttributes>;
   }
@@ -84,7 +84,7 @@ class QuestionSetsService extends FirebaseService {
    */
   getFeaturedQuestionSets() {
     const collectionRef = this.getCollectionRef();
-    const isFeaturedFilter = where('isFeatured', '==', true);
+    const isFeaturedFilter = where("isFeatured", "==", true);
     const q = query(collectionRef, isFeaturedFilter);
 
     return getDocs(q);
@@ -105,7 +105,7 @@ class QuestionSetsService extends FirebaseService {
 
     const foundQuestionSet = (await getDoc(doc(ref, qsid))).data();
 
-    if (!foundQuestionSet) throw new Error('Question set not found');
+    if (!foundQuestionSet) throw new Error("Question set not found");
 
     await setDoc(
       doc(ref, qsid),
@@ -127,22 +127,22 @@ class QuestionSetsService extends FirebaseService {
     console.log(questionSetRef);
     const questionsRef = collection(
       this.firestore,
-      'questions'
+      "questions"
     ) as CollectionReference<IBaseQuestion>;
     console.log(questionsRef);
 
     const foundQuestionSet = await getDoc(doc(questionSetRef, qsid));
     // Use composite key to query the question
     const questionQuery = query(
-        collection(this.firestore, 'questions'),
-        where('question', '==', question),
-        where('subject', '==', subject),
-        where('type', '==', type)
+      collection(this.firestore, "questions"),
+      where("question", "==", question),
+      where("subject", "==", subject),
+      where("type", "==", type)
     );
-    
+
     const querySnapshot = await getDocs(questionQuery);
     if (querySnapshot.empty) {
-        throw new Error('Error adding question set: Question not found!');
+      throw new Error("Error adding question set: Question not found!");
     }
 
     // Assuming there's only one matching question, get its ID
@@ -150,18 +150,20 @@ class QuestionSetsService extends FirebaseService {
 
     // Check if the question already exists in the set
     if (foundQuestionSet.data()?.questions.includes(questionId)) {
-        throw new Error('Error adding question set: Question already exists in set!');
+      throw new Error(
+        "Error adding question set: Question already exists in set!"
+      );
     }
 
     // Update the question set with the new question
     await updateDoc(doc(questionSetRef, qsid), {
-        questions: arrayUnion(questionId),
+      questions: arrayUnion(questionId),
     });
-}
+  }
 
   async getQuestionSetByUserId(userId: string) {
     const collectionRef = this.getCollectionRef();
-    const createdByFilter = where('createdBy', '==', userId);
+    const createdByFilter = where("createdBy", "==", userId);
     const q = query(collectionRef, createdByFilter);
 
     return await getDocs(q);
@@ -178,7 +180,7 @@ class QuestionSetsService extends FirebaseService {
 
   async getQuestionSetByName(qsName: string) {
     const qsCollection = this.getCollectionRef();
-    const thisQsFilter = where('title', '==', qsName);
+    const thisQsFilter = where("title", "==", qsName);
     const qs = query(qsCollection, thisQsFilter);
 
     return await getDocs(qs);

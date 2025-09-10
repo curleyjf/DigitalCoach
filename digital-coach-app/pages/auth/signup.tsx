@@ -58,7 +58,9 @@ export default function SignUpPage() {
             <h2>Register an Account</h2>
             <h3>Email</h3>
             <TextField type="email" placeholder="" {...register("email")} />
-            {formError.email && <p className={styles.issue}>{formError.email.message}</p>}
+            {formError.email && (
+              <p className={styles.issue}>{formError.email.message}</p>
+            )}
             <h3>Password</h3>
             <TextField
               type="password"
@@ -66,7 +68,9 @@ export default function SignUpPage() {
               placeholder=""
               {...register("password")}
             />
-            {formError.password && <p className={styles.issue}>{formError.password.message}</p>}
+            {formError.password && (
+              <p className={styles.issue}>{formError.password.message}</p>
+            )}
             <h3>Confirm Password</h3>
 
             <TextField
@@ -76,16 +80,16 @@ export default function SignUpPage() {
               {...register("passwordConfirm")}
             />
             {formError.passwordConfirm && (
-              <p className={styles.issue}>{formError.passwordConfirm.message}</p>
+              <p className={styles.issue}>
+                {formError.passwordConfirm.message}
+              </p>
             )}
 
             <Button type="submit">
               <HowToRegIcon />
               Register
             </Button>
-            <Link href="/auth/login">
-              <a>Have an account? log in</a>
-            </Link>
+            <Link href="/auth/login">Have an account? log in</Link>
           </form>
         </div>
       </CenteredComponent>

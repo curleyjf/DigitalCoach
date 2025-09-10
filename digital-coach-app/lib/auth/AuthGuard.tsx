@@ -1,27 +1,28 @@
 import React, { PropsWithChildren, useEffect } from "react";
-import { WithRouterProps } from "next/dist/client/with-router";
-import { withRouter } from "next/router";
-
+import { useRouter } from "next/router";
 import useAuthContext from "@App/lib/auth/AuthContext";
 import AuthService from "@App/lib/auth/AuthService";
 
-function AuthGuard({ children, router }: PropsWithChildren<WithRouterProps>) {
+export default function AuthGuard({ children }: PropsWithChildren<{}>) {
   const { currentUser } = useAuthContext();
+  const router = useRouter();
 
   useEffect(() => {
-    AuthService.onAuthStateChanged(async () => {
+    const unsubscribe = AuthService.onAuthStateChanged(async () => {
       const isSignedIn = AuthService.isSignedIn();
+      console.log("Is Signed In?", isSignedIn);
 
       if (!isSignedIn) router.push("/auth/login");
     });
 
-    if (currentUser && !currentUser?.data()?.registrationCompletedAt)
+    if (currentUser && !currentUser?.data()?.registrationCompletedAt) {
       router.push("/auth/register");
+    }
+
+    return () => unsubscribe?.();
   }, [currentUser, router]);
 
   if (!currentUser) return null;
 
   return <>{children}</>;
 }
-
-export default withRouter(AuthGuard);

@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import AnswerService from "../answer/AnswerService";
 import InterviewQuestionService from "./InterviewQuestionService";
 import {ref, getStorage} from 'firebase/storage'

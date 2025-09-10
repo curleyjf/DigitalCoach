@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import InterviewService from "../interview/InterviewService";
 import InterviewQuestionService from "../interviewQuestion/InterviewQuestionService";
 import StorageService from "../storage/StorageService";

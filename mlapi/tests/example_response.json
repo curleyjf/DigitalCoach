@@ -1,0 +1,124 @@
+{
+    "evaluation": {
+        "timeline": [
+            {
+                "start": 1680,
+                "end": 2504,
+                "audioSentiment": "NEUTRAL",
+                "facialEmotion": [
+                    "neutral",
+                    "neutral"
+                ]
+            },
+            {
+                "start": 2552,
+                "end": 3528,
+                "audioSentiment": "NEUTRAL",
+                "facialEmotion": [
+                    "neutral",
+                    "neutral"
+                ]
+            },
+            {
+                "start": 3584,
+                "end": 4280,
+                "audioSentiment": "POSITIVE",
+                "facialEmotion": [
+                    "neutral",
+                    "neutral"
+                ]
+            }
+        ],
+        "isStructured": 0,
+        "predictionScore": 8.874111771583557,
+        "facialStatistics": {
+            "topThreeEmotions": [
+                "neutral",
+                "angry",
+                "surprise"
+            ],
+            "frequencyOfTopEmotion": 0.93,
+            "frequencyOfSecondEmotion": 0.03,
+            "frequencyOfThirdEmotion": 0.03
+        },
+        "overallFacialEmotion": "neutral",
+        "overallSentiment": "NEUTRAL",
+        "topFiveKeywords": [
+            {
+                "text": "Testing",
+                "rank": 0.27,
+                "count": 2,
+                "timestamps": [
+                    {
+                        "start": 1680,
+                        "end": 2064
+                    },
+                    {
+                        "start": 2072,
+                        "end": 2504
+                    }
+                ]
+            },
+            {
+                "text": "mic",
+                "rank": 0.14,
+                "count": 1,
+                "timestamps": [
+                    {
+                        "start": 2976,
+                        "end": 3224
+                    }
+                ]
+            }
+        ],
+        "transcript": "0    test test use mic hopefully work",
+        "bigFive": {
+            "o": 3.5,
+            "c": 2.7,
+            "e": 3.0,
+            "a": 3.2,
+            "n": 3.8,
+            "_disclaimer": "This is a weak approximation of Big Five traits and should not be used for serious assessments."
+        },
+        "competencyFeedback": {
+            "communication_clarity": {
+                "score": 1.57,
+                "strengths": [],
+                "areas_for_improvement": [
+                    "Response structure could be improved"
+                ],
+                "recommendations": [
+                    "Try using the STAR method (Situation, Task, Action, Result) for structuring your answers"
+                ]
+            },
+            "confidence": {
+                "score": 2.39,
+                "strengths": [],
+                "areas_for_improvement": [
+                    "Confidence level appears lower than optimal"
+                ],
+                "recommendations": [
+                    "Practice maintaining eye contact and speaking clearly"
+                ]
+            },
+            "engagement": {
+                "score": 2.0,
+                "strengths": [],
+                "areas_for_improvement": [
+                    "Try to use more keywords related to the content."
+                ],
+                "recommendations": [
+                    "Practice adding emphasis to key points in your responses"
+                ]
+            },
+            "overall_score": 1.99,
+            "summary": "Your response needs development in several key areas to increase interview effectiveness.",
+            "key_recommendations": [
+                "Try using the STAR method (Situation, Task, Action, Result) for structuring your answers",
+                "Practice maintaining eye contact and speaking clearly",
+                "Practice adding emphasis to key points in your responses"
+            ]
+        },
+        "aggregateScore": 31.1
+    }
+}

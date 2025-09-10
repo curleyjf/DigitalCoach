@@ -30,15 +30,15 @@ For more detailed documentation on the different parts of the app ([frontend](/d
    and download all packages in the UI prompt (sorry we didn't figure out which ones you really need)
 1. Create an account with Assembly AI and get an API key
 1. Populate the .env file in `ml-api/` with the API key from AssemblyAI. The files in the repository are just sample env files. Make sure that the files are named .env without the example part!
-2. Ensure that firebase is connected: run `firebase login` and click the link to login and authenticate
-3. Run `firebase projects:list` to see the projectId
-4. Set the current project using the projectId from the previous step: `firebase use <projectId>`
+1. Ensure that firebase is connected: run `firebase login` and click the link to login and authenticate
+1. Run `firebase projects:list` to see the projectId
+1. Set the current project using the projectId from the previous step: `firebase use <projectId>`
 
 ## Frontend
 
 - Prerequisites
   - Ensure you are running Windows or Ubuntu to avoid complier issues
-  - Use Node v16.19.0
+  - Use Node v20.19.2
 
 1. cd to the `digital-coach-app` directory
 1. run `yarn install` to install dependencies for Next.JS

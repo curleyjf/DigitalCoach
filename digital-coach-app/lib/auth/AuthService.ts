@@ -43,7 +43,7 @@ class AuthService extends FirebaseService {
   }
 
   onAuthStateChanged(callback: (user: User | null) => void) {
-    firebaseOnAuthStateChanged(this.auth, callback);
+    return firebaseOnAuthStateChanged(this.auth, callback);
   }
 }
 

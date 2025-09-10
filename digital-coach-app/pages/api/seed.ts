@@ -10,10 +10,7 @@ import getRandomInt from "@App/util/getRandomInt";
 import InterviewQuestionService from "@App/lib/interviewQuestion/InterviewQuestionService";
 import { DocumentReference } from "firebase/firestore";
 import { IInterviewAttributes } from "@App/lib/interview/models";
-import AnswerService from "@App/lib/answer/AnswerService";
 import QuestionSetsService from "@App/lib/questionSets/QuestionSetsService";
-import fs from "fs/promises";
-import StorageService from "@App/lib/storage/StorageService";
 import { TExperienceLevel, TQuestionType } from "@App/lib/question/models";
 
 export default async function seed(req: NextApiRequest, res: NextApiResponse<{}>) {

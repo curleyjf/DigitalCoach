@@ -1,54 +1,78 @@
 services:
-  app:
-    build:
-      context: ./backend/
-      dockerfile: Dockerfile
-    image: digitalcoach-mlapi:latest
-    stop_signal: SIGINT
-    environment:
-      - TZ=${timezone}
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
-    volumes:
-      - type: bind
-        source: ${code_source}
-        target: /app/backend
-    command: gunicorn --bind 0.0.0.0:5000 --pythonpath /app backend.main:application
+  # API server
+  api:
+    build: .
     ports:
-      - "${app_ports}"
-    depends_on:
-      - redis
-
-  worker:
-    build:
-      context: ./backend/
-      dockerfile: Dockerfile
-    image: digitalcoach-worker:latest
-    stop_signal: SIGINT
+      - "8000:8000"
     environment:
-      - TZ=${timezone}
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
-    volumes:
-      - type: bind
-        source: ${code_source}
-        target: /app/backend
-    command: rq worker --with-scheduler high default low 
+      - WORKERS_COUNT=3
     depends_on:
       - redis
+    volumes:
+      - ./data:/app/data
+    networks:
+      - mlapi-network
 
+  # Redis for job queue and caching
   redis:
-    hostname: redis
-    image: redis:7.0.8-bullseye
-    command: redis-server --requirepass ${REDIS_PASSWORD}
-    environment:
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    image: redis:7-alpine
     ports:
-      - ${redis_port}
+      - "6379:6379"
     volumes:
-      - redis_data:/data
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - mlapi-network
+
+  # High priority worker for facial and audio analysis
+  high-worker:
+    build: .
+    command: python -m redisStore.worker high
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - redis
+    volumes:
+      - ./data:/app/data
+    networks:
+      - mlapi-network
+    deploy:
+      replicas: 2
+
+  # Default worker for other tasks
+  default-worker:
+    build: .
+    command: python -m redisStore.worker default
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - redis
+    volumes:
+      - ./data:/app/data
+    networks:
+      - mlapi-network
+    deploy:
+      replicas: 3
+
+  # Worker monitor service
+  monitor:
+    build: .
+    command: python -m redisStore.monitor
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - redis
+    networks:
+      - mlapi-network
+
+networks:
+  mlapi-network:
+    driver: bridge
 
 volumes:
-  redis_data:
+  redis-data:

@@ -1,4 +1,4 @@
-@import "@App/styles/colors.scss";
+@use "@App/styles/colors.scss" as *;
 
 .ResumeInterviewTable {
   width: 100%;

@@ -1,9 +1,9 @@
-import { useQuery } from "react-query";
-import QuestionService from "../question/QuestionService";
+import { useQuery } from "@tanstack/react-query";
 import QuestionSetsService from "./QuestionSetsService";
 
 export default function useGetFeaturedQuestionSets() {
-  return useQuery(["featuredQuestionSets"], () =>
-    QuestionSetsService.getFeaturedQuestionSets()
-  );
+  return useQuery({
+    queryKey: ["featuredQuestionSets"], // Query key
+    queryFn: () => QuestionSetsService.getFeaturedQuestionSets(), // Fetch function
+  });
 }

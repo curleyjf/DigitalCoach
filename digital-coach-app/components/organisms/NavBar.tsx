@@ -10,43 +10,40 @@ export default function NavBar() {
   return (
     <div className={style.main}>
       <div className={style.barcontainer}>
-        <Link href="/">
-          <a className={style.logo_text}>Digital Coach</a>
+        <Link href="/" className={style.logo_text}>
+          Digital Coach
         </Link>
         <div className={style.links}>
-          <Link href="/home">
-            <a className={style.linksText}>Home</a>
+          <Link href="/" className={style.linksText}>
+            Dashboard
           </Link>
-          <Link href="/">
-            <a className={style.linksText}>Dashboard</a>
+          <Link href="/video" className={style.linksText}>
+            Record a Mock Interview
           </Link>
-          <Link href="/video">
-            <a className={style.linksText}>Record a Mock Interview</a>
+          <Link href="/storytelling" className={style.linksText}>
+            Practice Storytelling
           </Link>
-          <Link href="/storytelling">
-            <a className={style.linksText}>Practice Storytelling</a>
+          <Link href="/naturalconversation" className={style.linksText}>
+            Natural Conversation
           </Link>
-          <Link href="/naturalconversation">
-            <a className={style.linksText}>Natural Conversation</a>
-          </Link>
-          {/* <Link href='/start'>
-            <a className={style.linksText}>Start an Interview</a>
+          {/* <Link href='/start' className={style.linksText}>
+            Start an Interview
           </Link> */}
           {/* <Link href='/past'>
             <a className={style.linksText}>Review Past Interviews</a>
           </Link> */}
-          <Link href="/start/custom">
-            <a className={style.linksText}>Create Custom Question Set</a>
+          <Link href="/start/custom" className={style.linksText}>
+            Create Custom Question Set
           </Link>
           {/*Here while developing, can be removed later if desired */}
-          <Link href="/connections">
-            <a className={style.linksText}>Connections</a>
+          <Link href="/connections" className={style.linksText}>
+            Connections
           </Link>
-          <Link href="/progress">
-            <a className={style.linksText}>Progress Tracking</a>
+          <Link href="/progress" className={style.linksText}>
+            Progress Tracking
           </Link>
-          <Link href="/profile">
-            <a className={style.linksText}>Profile</a>
+          <Link href="/profile" className={style.linksText}>
+            Profile
           </Link>
         </div>
 

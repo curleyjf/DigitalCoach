@@ -18,7 +18,7 @@ export const answerReceive = functions.https.onRequest(async (req, res) => {
   const firestore = getFirestore();
   const answerRef = doc(
     firestore,
-    `users/${userId}/interviews/${interviewId}/questions/${questionId}/answers/${answerId}`
+    `users/${userId}/interviews/${interviewId}/questions/${questionId}/answers/${answerId}`,
   );
   const answer = await getDoc(answerRef);
   if (!answer.exists) {
@@ -30,12 +30,15 @@ export const answerReceive = functions.https.onRequest(async (req, res) => {
 
 /* A function that is triggered when a new document is created in the specified path. */
 export const answerUpload = functions.firestore
-  .document(
-    "users/{userId}/interviews/{interviewId}/interviewQuestions/{questionId}/answers/{answerId}"
-  )
-  .onCreate(async (snapshot, context) => {
+  .onDocumentCreated(
+    "users/{userId}/interviews/{interviewId}/interviewQuestions/{questionId}/answers/{answerId}", async (event) => {
+    const snapshot = event.data;
+    const { userId, interviewId, questionId, answerId } = event.params;
+
+    if (!snapshot) return;
+
     const data = snapshot.data();
-    const { userId, interviewId, questionId, answerId } = context.params;
+
     const videoRefUrl = data.videoUrl;
     const videoRef = ref(getStorage(app), videoRefUrl);
     const videoDownloadUrl = await getDownloadURL(videoRef);

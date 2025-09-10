@@ -1,75 +1,123 @@
-# ML API Backend
-## Project Structure
-The project has been reorganized into logical packages:
-```
-backend/
-├── redisStore/          # Redis connection, queue management and worker
-├── server/         # Flask server, routes and API endpoints
-├── tasks/          # ML processing tasks and modules
-│   ├── helpers/    # Helper functions for tasks
-│   └── models/     # ML models
-└── tests/          # Test suite
-```
-## Development
-### Installation
-To set up the development environment:
+# ML API
+
+Machine Learning API for video analysis, providing audio sentiment analysis, facial emotion detection, and more.
+
+## Features
+
+- Audio sentiment analysis using AssemblyAI
+- Facial emotion detection using DeepFace
+- STAR feedback evaluation
+- Big Five personality traits analysis
+- Task queuing with Redis RQ
+- Multiple worker queues for parallel processing
+
+## Getting Started with Docker
+
+The easiest way to run the application is using Docker Compose. Note that the final image size is approximately 4.5GB due to ML dependencies.
+
+### Prerequisites
+
+- Docker and Docker Compose installed on your system
+- At least 5GB of free disk space
+
+### Running with Docker
+
+1. Clone the repository
+2. Navigate to the project directory
+3. Build and start the services:
+
 ```bash
-# Clone the repository
-`git clone <repository-url> && cd mlapi`
-# Install dependencies
-`cd backend && pip install -r requirements.txt`
-```
-or using [uv](https://docs.astral.sh/uv/getting-started/installation)
-```bash
-uv sync
-```
-or poetry or by running `python setup.py` which just does `pip install -r requirements.txt` 
-### Running the Server
-```bash
-# Run the Flask server
-cd backend && python main.py
-```
-### Running the Worker
-```bash
-# Run the Redis worker
-rq worker high default low
-```
-### Running Tests
-```bash
-# Run all tests
-pytest
-# Run specific tests
-pytest backend/tests/test_processing.py
-```
-## Docker
-To run the full stack download docker-desktop then run:
-```bash
+docker-compose build  # This may take 5-10 minutes
 docker-compose up -d
 ```
+
+This will start:
+- The main API server on port 8000
+- Redis database for job queuing
+- Multiple workers for processing different priority tasks
+- A monitoring service for job status
+
+## Local Development Setup
+
+For local development without Docker:
+
+1. Install Python 3.12 or higher
+2. Install UV (faster pip alternative):
+   ```bash
+   curl -LsSf https://astral.sh/uv/install.sh | sh
+   ```
+
+3. Clone and setup the project:
+   ```bash
+   git clone <repository-url>
+   cd mlapi
+   uv venv
+   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+   uv sync
+   ```
+
+4. Install and start Redis:
+   ```bash
+   # On Ubuntu/Debian
+   sudo apt-get install redis-server
+   sudo systemctl start redis
+   
+   # On macOS
+   brew install redis
+   brew services start redis
+   
+   # On Windows, download from https://redis.io/download
+   ```
+
+5. Start the services (in separate terminals):
+   ```bash
+   # Terminal 1: API server
+   python main.py
+   
+   
+   # Terminal 2: Worker
+   python -m redisStore.worker 
+   or 
+   rq worker high default low
+   ```
+
+## Usage
+
+1. Access the API documentation at http://localhost:8000/docs
+2. Test the API:
+   - Navigate to the `/api/create_answer` endpoint
+   - Execute the POST request with an empty body (it will use a default test video)
+   - For custom videos, provide a `video_url` in the request body
+   - Some YouTube videos are supported (must be publicly accessible)
+   - For the Frontend use the signed URL from the Firebase. 
+
+## Linting
+- `mypy .`
+
+## Formatting
+- `ruff format .`
+
+
+## Known Issues and Future Improvements
+
+- AssemblyAI API key is currently hardcoded (will be moved to environment variables)
+- Queue priority system needs optimization
+- Better error handling for video processing failures
+
 ## Environment Variables
-- `REDIS_HOST`: Redis host (default: localhost)
+
+Configure the application using environment variables:
+
+- `REDIS_HOST`: Redis host (default: "localhost")
 - `REDIS_PORT`: Redis port (default: 6379)
-- `REDIS_PASSWORD`: Redis password
-- `REDIS_URL`: Redis URL (alternative to host/port/password)
-- `AAPI_KEY`: Assembly AI API key for speech processing
-## Temporary Files
-Temporary files are managed in standardized locations(not atm):
-- `/backend/tmp/data`: General temporary data files
-- `/backend/tmp/audio`: Audio files (.mp3)
-- `/backend/tmp/video`: Video files (.mp4)
-- `/backend/tmp/output`: Processed output files
-## Feedback Systems
+- `REDIS_PASSWORD`: Redis password (optional)
+- `REDIS_URL`: Complete Redis URL (optional, overrides other Redis settings)
+- `WORKERS_COUNT`: Number of worker processes (used in Docker setup)
 
-### Competency-Based Feedback
-The system now implements a competency-based feedback approach that provides:
-- Practical, actionable feedback on interview skills
-- Analysis of communication clarity, confidence, and engagement
-- Specific recommendations for improvement
-- Numerical scores for each competency area
+## Testing
 
-This approach replaces the previous Big 5 personality trait scoring with more directly applicable feedback for interview preparation.
+Run tests using pytest:
 
-## TODO
-- Recreate the structured score NLP model. The results show a 62% validation ON THE TEST SET. That is barely better than a coinflip...
-- Enhance competency feedback with more specialized metrics for different interview types
-- Add benchmark comparison to successful interviews in similar roles
+```bash
+pytest
+```

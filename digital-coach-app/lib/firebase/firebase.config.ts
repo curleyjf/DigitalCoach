@@ -14,12 +14,12 @@ export const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 const localIp = "localhost";
-if (!getApps.length) {
+
+if (!getApps().length) {
   const app = initializeApp(firebaseConfig);
-  if (typeof window !== "undefined") {
-    if ("measurementId" in firebaseConfig) {
-      getAnalytics();
-    }
+
+  if (typeof window !== "undefined" && "measurementId" in firebaseConfig) {
+    getAnalytics(app);
   }
 
   const auth = getAuth(app);

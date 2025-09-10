@@ -1,10 +1,10 @@
-import Link from 'next/link';
-import Avatar from '@App/components/atoms/Avatar';
-import Card from '@App/components/atoms/Card';
-import Grid from '@mui/material/Grid';
-import useAuthContext from '@App/lib/auth/AuthContext';
-import AuthGuard from '@App/lib/auth/AuthGuard';
-import styles from '@App/styles/ProgressPage.module.scss';
+import Link from "next/link";
+import Avatar from "@App/components/atoms/Avatar";
+import Card from "@App/components/atoms/Card";
+import Grid from "@mui/material/Grid";
+import useAuthContext from "@App/lib/auth/AuthContext";
+import AuthGuard from "@App/lib/auth/AuthGuard";
+import styles from "@App/styles/ProgressPage.module.scss";
 
 function ProgressPage() {
   const { currentUser } = useAuthContext();
@@ -19,33 +19,37 @@ function ProgressPage() {
       <Grid
         className={styles.ProgressPage_body}
         container
-        alignItems='center'
-        justifyContent='center'
-        columns={3}>
+        alignItems="center"
+        justifyContent="center"
+        columns={3}
+      >
         <Card
           className={styles.ProgressPage_bodyCard}
-          title='Followup Interview'>
-          <Link href='/start'>
-            <a className={styles.linksText}>Start Followup Interview</a>
+          title="Followup Interview"
+        >
+          <Link href="/start" className={styles.linksText}>
+            Start Followup Interview
           </Link>
           <p></p>
         </Card>
-        <Card className={styles.ProgressPage_bodyCard} title='Big Five Score'>
+        <Card className={styles.ProgressPage_bodyCard} title="Big Five Score">
           Current Score: 75<br></br>
           Target Score: 100<br></br>
         </Card>
-        <Card className={styles.ProgressPage_bodyCard} title='How to Improve'>
+        <Card className={styles.ProgressPage_bodyCard} title="How to Improve">
           1) Make more eye contact<br></br>
           2) Say "Um" less<br></br>
         </Card>
         <Card
           className={styles.ProgressPage_bodyGraph}
-          title="Graph of User's Score Progress">
+          title="Graph of User's Score Progress"
+        >
           <img
-            src='sampleLineGraph.png'
-            alt='Sample Graph'
-            width='300'
-            height='200'></img>
+            src="sampleLineGraph.png"
+            alt="Sample Graph"
+            width="300"
+            height="200"
+          ></img>
         </Card>
       </Grid>
     </div>
@@ -66,9 +70,9 @@ function ProgressInit() {
 
       <div className={styles.ProgressPage_body}>
         <div className={styles.ProgressPage_bodyLeft}>
-          <Card title='Initial Interview'>
-            <Link href='/video'>
-              <a className={styles.linksText}>Start an Interview</a>
+          <Card title="Initial Interview">
+            <Link href="/video" className={styles.linksText}>
+              Start an Interview
             </Link>
           </Card>
         </div>
@@ -80,7 +84,7 @@ function ProgressInit() {
 export default function Progress() {
   //Store user's id here
   const { currentUser } = useAuthContext();
-  let hasInterviewed = currentUser?.get('hasCompletedInterview');
+  let hasInterviewed = currentUser?.get("hasCompletedInterview");
   //Add flag to user that says if they've completed an interview or not
   if (hasInterviewed) {
     return (

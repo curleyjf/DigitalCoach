@@ -73,6 +73,27 @@ export default function NaturalConversationPage() {
     await avatarRef.current?.handleInterrupt();
   };
 
+  const waitForJobResult = async (
+    jobId: string,
+    retries = 10,
+    delay = 3000
+  ) => {
+    for (let i = 0; i < retries; i++) {
+      const statusRes = await axios.get(
+        `http://localhost:8000/api/create_answer/${jobId}`
+      );
+
+      if (statusRes.data.status === "completed") {
+        return axios.get(
+          `http://localhost:8000/api/create_answer/${jobId}/result`
+        );
+      }
+
+      await new Promise((res) => setTimeout(res, delay));
+    }
+    throw new Error("Job did not complete in time.");
+  };
+
   // Optional: This function is still available if you need to manually fetch a response.
   const getResponse = async () => {
     try {
@@ -92,26 +113,17 @@ export default function NaturalConversationPage() {
       );
       console.log(dlURL);
 
-      const sentResponse = await axios.post("http://localhost:8000/predict", {
-        videoUrl: dlURL,
-      });
-      const jobId = sentResponse.data.message.split(" ")[1];
-
-      const resultResponse = await axios.get(
-        `http://localhost:8000/results/${jobId}`
+      const sentResponse = await axios.post(
+        "http://localhost:8000/api/create_answer/",
+        {
+          video_url: dlURL,
+        }
       );
+      const jobId = sentResponse.data.job_id;
 
-      if (resultResponse.data.result) {
-        console.log(resultResponse.data.result);
-        const interviewerText =
-          resultResponse.data.result.text_analysis.output_text.replace(
-            /(\.)(?=\S)/g,
-            "$1 "
-          );
-        handleInterviewerTranscript(interviewerText);
-      } else {
-        alert("Results not ready. Try again later.");
-      }
+      const jobIdResponse = await waitForJobResult(jobId);
+
+      console.log(jobIdResponse);
     } catch (error) {
       console.error("Error:", error);
       alert("An error occurred while processing the recording.");
@@ -157,11 +169,9 @@ export default function NaturalConversationPage() {
                 >
                   Interrupt Task
                 </button>
-                {mediaBlobUrl && (
-                  <button className={styles.saveButton} onClick={getResponse}>
-                    GetResponse
-                  </button>
-                )}
+                <button className={styles.saveButton} onClick={getResponse}>
+                  GetResponse
+                </button>
               </div>
             </div>
           </div>

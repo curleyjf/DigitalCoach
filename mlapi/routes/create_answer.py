@@ -1,22 +1,22 @@
-from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
-from schemas.jobs import JobId, JobResponse, CreateAnswerJobRequest
-from schemas.create_answer import CreateAnswer
-from redisStore.queue import add_task_to_queue
-from tasks.create_answer_task import (
-    create_answer,
-    start_audio_analysis_job,
-    start_facial_analysis_job,
-)
-from rq.job import Job
+from pydantic import ValidationError
+from fastapi import APIRouter, HTTPException, Depends
+from schemas import JobId, JobResponse, CreateAnswerJobRequest, CreateAnswerJobResponse
+from services import orchestrator, jobs
 from redisStore.myconnection import get_redis_con
-from typing import Optional
+from redis import Redis
 from utils.logger_config import get_logger
 
-logger = get_logger(__name__)
+logger = get_logger(__name__) # create a logger instance to log messages 
 
 router = APIRouter(prefix="/api/create_answer", tags=["analysis"])
 
+def get_redis():
+    """
+    Returns a Redis connnection instance.
+    """
+    return get_redis_con()
 
+# POST /api/create_answer
 @router.post(
     "/",
     response_model=JobId,
@@ -25,104 +25,91 @@ router = APIRouter(prefix="/api/create_answer", tags=["analysis"])
 )
 async def create_answer_job(request: CreateAnswerJobRequest):
     """
-    Start a job to generate an answer for the video URL.
+    Start a job to generate an answer for the given video URL.
 
-    This will:
-    1. Start an audio analysis job using AssemblyAI
-    2. Start a facial analysis job using DeepFace
-    3. Start a create_answer job that depends on the first two jobs
+    Starts interview analysis consisting of an audio analysis job followed by a create_answer job
+    
+    Args:
+        request (CreateAnswerJobRequest): The request body containing the video URL.
+    Returns:
+        JobId: The ID of the created job.
+    Raises: 
+        ValidationError: If the video_url is empty or not a valid URL
+        HTTPException: If there is an error starting the job.
     """
+
+    video_url = str(request.video_url) # convert video url into string
+    logger.info(f"Received analysis request for: {video_url}")
     try:
-        # Use default video URL for testing if not provided
-        video_url = request.video_url or "https://assembly.ai/wildfires.mp3"
+        
+        # Start the interview analysis job (currently only does audio analysis)
+        job_id = orchestrator.start_interview_analysis(video_url)
 
-        # Start the audio and facial analysis jobs
-        audio_job_id = start_audio_analysis_job(video_url)
-        facial_job_id = start_facial_analysis_job(video_url)
+        logger.info(f"Started create_answer job: {job_id}")
 
-        # Start the create_answer job that depends on the first two jobs
-        job = add_task_to_queue(create_answer, video_url, audio_job_id, facial_job_id)
-
-        logger.info(f"Started create_answer job: {job.get_id()}")
-        return {"job_id": job.get_id()}
+        return JobId(job_id=job_id) # return the job ID of the created job
+    except ValidationError as e:
+        logger.error(f"Validation error starting create_answer job: {str(e)}")
+        raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         logger.error(f"Error starting create_answer job: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=f"Error starting create_answer job: {str(e)}")
 
-
+# GET /api/create_answer/{job_id}
 @router.get(
     "/{job_id}",
-    response_model=JobResponse,
+    response_model=CreateAnswerJobResponse,
     summary="Get the status of a create_answer job",
-    description="Check the status of a previously started create_answer job",
+    description="Check the status of a create_answer job", 
+    responses={
+        200: {
+            "description": "Job found, response contains status",
+            "model": CreateAnswerJobResponse,
+        },
+        400: {
+            "description": "Job ID contains whitespace",
+        },
+        404: {
+            "description": "Unable to find job",
+        },
+        500: {
+            "description": "System error when trying to fetch status",
+        },
+    },
 )
-async def get_create_answer_job(job_id: str):
+async def get_answer_job(job_id: str, redis: Redis = Depends(get_redis)):
     """
-    Get the status of a create_answer job.
+    Get the status of a create_answer job with the given job ID.
 
-    Returns the job status and result if available.
+    Args:
+        job_id (str):  The ID of the job to check.
+        redis (Redis): The Redis connection instance, injected by FastAPI's Depends which can be replaced with a fake Redis object during testing.
+    Returns:
+        Returns the job status in the form of JobResponse schema.
+    Raises:
+        HTTPException: If there is an error fetching the job status.
     """
+
     try:
-        job = Job.fetch(job_id, connection=get_redis_con())
+        job_id = job_id.strip()  # Clean up any extra whitespace
+        # Verify that job_id isn't just whitespace
+        if not job_id:
+            raise HTTPException(status_code=400, detail="job_id cannot be whitespace")
+        logger.info(f"Fetching create_answer job status for job_id: {job_id}")
+        
+        # Get the job status from Redis
+        job_status_data = jobs.get_job_status(job_id, redis)
+        
+        # Handle job not found
+        if job_status_data is None:
+            logger.warning(f"Job {job_id} not found.")
+            raise HTTPException(status_code=404, detail=f"Job {job_id} not found.")
 
-        if job.is_finished:
-            result = job.result
-            if isinstance(result, Exception):
-                return {
-                    "job_id": job_id,
-                    "status": "failed",
-                    "error": str(result),
-                }
-            return {
-                "job_id": job_id,
-                "status": "completed",
-                "result": result.dict() if hasattr(result, "dict") else result,
-            }
-        elif job.is_failed:
-            return {
-                "job_id": job_id,
-                "status": "failed",
-                "error": str(job.exc_info),
-            }
-        elif job.is_started:
-            return {
-                "job_id": job_id,
-                "status": "processing",
-            }
-        else:
-            return {
-                "job_id": job_id,
-                "status": "pending",
-            }
+        return CreateAnswerJobResponse(**job_status_data.model_dump())
+    # Catch HTTP exceptions and re-raise them
+    except HTTPException: 
+        raise
+    # Catch all other exceptions
     except Exception as e:
-        logger.error(f"Error getting create_answer job {job_id}: {str(e)}")
-        raise HTTPException(status_code=404, detail=f"Job not found: {str(e)}")
-
-
-@router.get(
-    "/{job_id}/result",
-    response_model=CreateAnswer,
-    summary="Get the result of a completed create_answer job",
-    description="Get the full result of a completed create_answer job",
-)
-async def get_create_answer_result(job_id: str):
-    """
-    Get the result of a completed create_answer job.
-
-    Only returns the result if the job is completed, otherwise raises an error.
-    """
-    try:
-        job = Job.fetch(job_id, connection=get_redis_con())
-
-        if job.is_finished:
-            result = job.result
-            if isinstance(result, Exception):
-                raise HTTPException(status_code=500, detail=str(result))
-            return result
-        elif job.is_failed:
-            raise HTTPException(status_code=500, detail=str(job.exc_info))
-        else:
-            raise HTTPException(status_code=202, detail="Job is still processing")
-    except Exception as e:
-        logger.error(f"Error getting create_answer result {job_id}: {str(e)}")
-        raise HTTPException(status_code=404, detail=f"Job not found: {str(e)}")
+        logger.error(f"System error fetching job {job_id}: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"System error fetching job {job_id}: {str(e)}")

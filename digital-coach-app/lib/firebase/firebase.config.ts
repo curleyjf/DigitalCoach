@@ -13,7 +13,10 @@ export const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
-const localIp = "localhost";
+// If we're in the browser (window exists), use localhost. If we're in a Docker container, use the service name 'firebase'.
+const emulatorHost = typeof window !== "undefined" ? "localhost" : "firebase";
+// If we're in the browser, use localhost for auth emulator. If in Docker, use 'firebase' service name.
+const authURL = typeof window !== "undefined" ? "http://localhost:9099" : "http://firebase:9099";
 
 if (!getApps().length) {
   const app = initializeApp(firebaseConfig);
@@ -23,13 +26,13 @@ if (!getApps().length) {
   }
 
   const auth = getAuth(app);
-  connectAuthEmulator(auth, `http://127.0.0.1:9099`, {
+  connectAuthEmulator(auth, authURL, {
     disableWarnings: true,
   });
 
   const db = getFirestore(app);
-  connectFirestoreEmulator(db, localIp, 8080);
+  connectFirestoreEmulator(db, emulatorHost, 8080);
 
   const storage = getStorage(app);
-  connectStorageEmulator(storage, localIp, 9199);
+  connectStorageEmulator(storage, emulatorHost, 9199);
 }

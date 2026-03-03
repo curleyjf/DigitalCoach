@@ -4,6 +4,7 @@ from typing import Any, TypedDict
 
 # Percentage of the total response that is Action, Result, Situation, Task
 class percentages(TypedDict):
+    """Distribution of STAR components"""
     action: float
     result: float
     situation: float
@@ -12,6 +13,7 @@ class percentages(TypedDict):
 
 # StarScore type
 class StarScore(TypedDict):
+    """STAR results for response"""
     fufilledStar: bool
     percentages: percentages
     classifications: list[list[str]]
@@ -28,7 +30,8 @@ def predict_star_scores(*args) -> dict[str, Any]:
     Returns:
     str: The predicted star label
     """
-
+    #should only need to be set once
+    classifier = pipeline("text-classification", model="dnttestmee/starclass_bert")  # type: ignore
     def predict(sentence) -> str:
         """
         Predicts the star label
@@ -43,7 +46,6 @@ def predict_star_scores(*args) -> dict[str, Any]:
             "LABEL_2": "Situation",
             "LABEL_3": "Task",
         }
-        classifier = pipeline("text-classification", model="dnttestmee/starclass_bert")  # type: ignore
         model_output: Any = classifier(sentence)
         # Single Label output.
         result: str = labels[str(model_output[0]["label"])]
@@ -53,7 +55,8 @@ def predict_star_scores(*args) -> dict[str, Any]:
     data = args[0]["text"]
     # Split the text into sentences.
     sentences: list = data.split(".")
-    classifications: list[list[str]] = []
+    # Contains sentence and label sentence type. 
+    classifications = []
     # Classify each sentence
     for sentence in sentences:
         if sentence == "":
@@ -105,7 +108,7 @@ def predict_star_scores(*args) -> dict[str, Any]:
 
 def percentageFeedback(percentages):
     """
-    Returns feedback based on the percentages
+    Set Pre-determined feedback based on the final STAR value produced
     """
     feedback = []
     if (

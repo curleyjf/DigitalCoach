@@ -7,9 +7,9 @@ from tasks.helpers.constants import (
 )
 import re
 from schemas.create_answer import (
-    TextStructureResult,
-    AudioSentimentResult,
-    StructureDetails,
+    # TextStructureResult,
+    # AudioSentimentResult,
+    # StructureDetails,
     BigFiveScoreResult,
     CreateAnswerEvaluation,
 )

@@ -1,4 +1,4 @@
-from schemas.create_answer import (
+from schemas import (
     AudioSentimentResult,
     SentimentResult,
     HighlightData,

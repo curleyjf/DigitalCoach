@@ -53,7 +53,7 @@ export default function SignUpPage() {
           <h1>{currentUser?.id}</h1>
           <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
             <div className={styles.logo}>
-              <h1>Digital Coach</h1>
+              <h1 className={styles.highlight}>Digital Coach</h1>
             </div>
             <h2>Register an Account</h2>
             <h3>Email</h3>

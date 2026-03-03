@@ -15,6 +15,7 @@ export default function Avatar(props: Props) {
       alt={alt}
       height={height ?? size ?? 52}
       width={width ?? size ?? 52}
+      unoptimized // Disable optimization for faster loading during development
       {...rest}
     />
   );

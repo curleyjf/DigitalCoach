@@ -1,56 +1,74 @@
-from fastapi import APIRouter
-from rq.job import Job
-import json
+from fastapi import APIRouter, Depends, HTTPException
+from schemas.jobs import JobResponse
 from utils.logger_config import get_logger
 from redisStore.queue import get_redis_con
+from redis import Redis
+from services import jobs
 
-logger = get_logger(__name__)
+# API router for job-releated endpoints which defines the root path as /api/jobs
+router = APIRouter(prefix="/api/jobs", tags=["jobs"]) 
+logger = get_logger(__name__) # create logger instance with the name of current module
 
-router = APIRouter(prefix="/api/jobs", tags=["jobs"])
-
-
-@router.get("/results/{job_id}")
-async def get_job_results(job_id: str):
+def get_redis():
     """
-    GET route that returns the results of a job.
+    Get Redis connection
+    """
+    return get_redis_con()
 
-    This endpoint fetches the results of a job from the Redis queue using the job ID.
-    It checks the status of the job and returns the result if the job is finished.
-    If the job is not found or not finished, it returns an appropriate message.
+# GET /api/jobs/results/{job_id}
+@router.get(
+        "/results/{job_id}",
+        response_model=JobResponse,
+        summary="Polls job status by job ID",
+        description="Checks the status of a job using its job ID from the Redis queue.",
+        responses={
+            200: {
+                "description": "Job found, response contains status",
+                "model": JobResponse,
+            },
+            400: {
+                "description": "Job ID contains whitespace",
+            },
+            404: {
+                "description": "Unable to find job",
+            },
+            500: {
+                "description": "System error when trying to fetch status",
+            },
+        },
+    )
+async def get_job_results(job_id: str, redis: Redis = Depends(get_redis)):
+    """
+    Polls the status for a job using its job ID from Redis queue.
 
     Args:
         job_id (str): The unique identifier of the job.
 
     Returns:
-        Response: A JSON response containing the job result if finished, or a message indicating the job status.
+        Response (JobResponse): A response containing the job's status including result or error in the form of the JobResponse schema.
+
+    Raises:
+        HTTPException: If job id is invalid, the job is not found or an error occurs while processing the job.
     """
+    job_id = job_id.strip()
     logger.info(f"Fetching results for job_id: {job_id}")
-    # get connection
-    conn = get_redis_con()
+    
+    # Fetch the job from Redis using the provided job_id
     try:
-        job = Job.fetch(job_id, connection=conn)
+        # verify that job isn't whitespace
+        if not job_id:
+            raise HTTPException(status_code=400, 
+            detail="Job ID can't be empty or whitespace.")
+        job_status_data = jobs.get_job_status(job_id, redis)
+        
+        # If job not found
+        if job_status_data is None:
+            logger.warning(f"Job not found: {job_id}")
+            raise HTTPException(status_code=404, detail=f"Job not found: {job_id}")
+        logger.info(f"Job status retrieved successfully for job_id: {job_id}")
+        return job_status_data
+    except HTTPException:
+        raise
     except Exception as e:
-        logger.warning(f"Job not found: {job_id}. Error: {str(e)}")
-        return ({"message": "Job not found.", "status": "error"}), 404
-    if not job.is_finished:
-        logger.info(f"Job is not finished yet: {job_id}")
-        return {"message": "Job is not finished yet.", "status": "pending"}
-    try:
-        result = job.result
-        if "errors" in result:
-            return ({"errors": result["errors"]}), 400
-        json_string = json.dumps(result)
-        logger.info(f"Job finished successfully: {job_id}")
-        return {"result": json.loads(json_string), "status": "success"}
-    except Exception as e:
-        logger.error(f"Error processing job result for job_id {job_id}: {str(e)}")
-        return (
-            (
-                {
-                    "message": "Error processing job result",
-                    "error": str(e),
-                    "status": "error",
-                }
-            ),
-            500,
-        )
+        logger.error(f"System error fetching job {job_id}: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"System error fetching job {job_id}: {str(e)}")

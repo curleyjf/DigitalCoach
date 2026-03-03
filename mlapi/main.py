@@ -6,7 +6,6 @@ from routes import (
     big_five,
     star_feedback,
     audio_analysis,
-    facial_analysis,
 )
 
 
@@ -14,8 +13,6 @@ api_description = """
 This API provides a simple interface to the various ML models used in Digital Coach. 
 ## Video Transcript 
 AssemblyAI provides the simple transcription service. 
-## Facial Recognition 
-DeepFace proivides emotional facial analysis for the submitted videos. 
 ## Feedback
 Provided feedback is Big Five Scores, Star Scores, competency scores, and statistical feedback.  
 """
@@ -47,9 +44,3 @@ app.include_router(create_answer.router)
 app.include_router(big_five.router)
 app.include_router(star_feedback.router)
 app.include_router(audio_analysis.router)
-app.include_router(facial_analysis.router)
-
-if __name__ == "__main__":
-    import uvicorn
-
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

@@ -53,7 +53,7 @@ export default function LoginPage() {
         <div className={styles.loginBox}>
           <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
             <div className={styles.logo}>
-              <h1>Digital Coach</h1>
+              <h1 className={styles.highlight}>Digital Coach</h1>
             </div>
             <h2>Login</h2>
             {authError && (

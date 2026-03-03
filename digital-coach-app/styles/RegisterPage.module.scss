@@ -41,10 +41,11 @@
     text-align: center;
     letter-spacing: 0.44px;
 
-    color: #fb8500;
+    color: #F9A75D;
 
     text-shadow: -2px 2px 0px #fff8f8;
   }
+  
   h2,
   h3 {
     margin: 0;
@@ -60,7 +61,7 @@
   }
 
   button {
-    background-color: $secondary;
+    background-color: $secondary-light;
     border-radius: 11px;
     color: #fff;
     font-family: inherit;

@@ -2,27 +2,29 @@
 
 .logo_text {
   font-family: Montserrat;
-  font-style: italic;
+  font-style: normal;
   font-weight: 600;
   font-size: 30px;
-  line-height: 24px;
-  color: $secondary;
+  line-height: 50%;
+  color: #F9A75D;
   text-align: center;
-
-  text-shadow: -2px 2px 0px #fff8f8;
+  justify-content: center;
+  margin-bottom: 15%;
+  margin-top: 10%;
 }
 .logout {
   background-color: #ffffff;
   border-radius: 11px;
   color: $primary;
   font-family: inherit;
-  height: 50px;
+  height: 60px;
   display: flex;
   align-items: center;
   justify-content: center;
   div {
     margin-left: 10px;
   }
+  margin-top: 10%;
 }
 .main {
   max-width: 10%;
@@ -42,15 +44,17 @@
 .barcontainer {
   display: flex;
   padding: 30px 20px;
-  justify-content: space-between;
+  justify-content: flex-start;
   flex-direction: column;
   background-color: $primary;
   color: $light-text;
   font-weight: 700;
   position: fixed;
-  top: 0;
-  height: 100%;
+  overflow-y: auto;
   max-width: 10%;
   min-width: 300px;
   box-sizing: border-box;
+  top: 0;
+  bottom: 0;
+  left: 0;
 }

@@ -1,0 +1,137 @@
+services:
+  # --- Frontend Service --- 
+  frontend:
+    build:
+      context: ./digital-coach-app # Path to frontend Dockerfile
+      target: deps # For development, build up to the 'deps' stage
+      args:
+        # Pass the environment variables as arguments for build-time use (make sure the names match from .env, Dockerfile, and here)
+        # Currently, these are null because the env file needs to be consolidated to the root folder first. However, this shouldn't be a problem for now we're using firebase emulators for local development.
+        - NEXT_PUBLIC_FIREBASE_API_KEY
+        - NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+        - NEXT_PUBLIC_FIREBASE_PROJECT_ID
+        - NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+        - NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
+        - NEXT_PUBLIC_FIREBASE_APP_ID
+        - NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
+    # Put secrets in the container environment as they're for runtime use
+    # environment:
+    #   - HEYGEN_API_KEY # Pass HEYGEN_API_KEY to the container environment
+    env_file:
+      - ./digital-coach-app/.env # load environment variables from .env file (this is specifically for HeyGen API key. TEMPORARY: use environment directive above after env files have been consolidated to the root folder)
+    volumes:
+      # Mount the frontend code for live development
+      - ./digital-coach-app:/app
+      - /app/node_modules # Preserve node_modules inside the container
+    command: yarn dev # Start the Next.js development server
+    ports:
+      # Expose port 3000 for the frontend
+      - "3000:3000"
+    depends_on:
+      - api # Ensure the backend API is started before the frontend
+    networks:
+      - app-network # use the shared network to communicate with the backend
+
+  # Firebase Emulator Suite for local development
+  firebase:
+    # use pre-built image with firebase tools
+    image: andreysenov/firebase-tools
+    volumes:
+      # mount frontend as it contains firebase config and rules
+      - ./digital-coach-app:/home/node/app
+    working_dir: /home/node/app # set working directory to non-root user's home
+    # expose the necessary ports for the emulators
+    ports:
+      - "9099:9099" # Auth Emulator
+      - "8080:8080" # Firestore Emulator
+      - "9199:9199" # Storage Emulator
+      - "4000:4000" # Firebase UI
+    # Start the emulators with the specified config file
+    command: firebase emulators:start --project=demo-digital-coach
+    networks:
+      - app-network # use the shared network to the communicate with the frontend and backend
+
+  # --- Backend Services ---
+  # API service 
+  api:
+    build: ./mlapi # Path to backend Dockerfile
+    ports:
+      - "8000:8000" # Expose port 8000 for the API
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - WORKERS_COUNT=3
+    volumes:
+      - ./mlapi:/app # Mount backend code for live development
+      - /app/.venv # Preserves the virtual environment inside the container
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload # Start the API with auto-reload for development. This overrides the default CMD in the Dockerfile which is meant for production.
+    depends_on:
+      - redis # Ensure Redis is started before the API
+    networks:
+      - app-network # Use the shared network to communicate with the other services
+
+  # Redis for job queue and caching
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - app-network
+
+  # High priority worker for facial and audio analysis
+  high-worker:
+    build: ./mlapi
+    command: python -m redisStore.worker high
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - redis
+    volumes:
+      - ./mlapi/data:/app/data
+      - /app/.venv # Preserves the virtual environment inside the container
+    networks:
+      - app-network
+    deploy:
+      replicas: 2
+
+  # Default worker for other tasks
+  default-worker:
+    build: ./mlapi
+    command: python -m redisStore.worker default
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - redis
+    volumes:
+      - ./mlapi/data:/app/data
+      - /app/.venv # Preserves the virtual environment inside the container
+    networks:
+      - app-network
+    deploy:
+      replicas: 3
+
+  # Worker monitor service
+  monitor:
+    build: ./mlapi
+    command: python -m redisStore.monitor
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - redis
+    volumes:
+      - /app/.venv # Preserves the virtual environment inside the container
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  redis-data:
